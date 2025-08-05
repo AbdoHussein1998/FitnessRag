@@ -1,0 +1,20 @@
+for Code Developemt 
+1- All Constants saved in enumes file
+2- All schemas are saved inside the sceham folder inside each folder
+3- All varibles are in snake case --> first_war, last_name
+4- All Classes and Folders are in Pascal case --> DataBase,FireBase
+5- All Functions Are in snake_case and it starts with verbs 
+6- the requirements file is the main source of libeeraries and framework
+
+
+
+
+
+
+
+for  Docker 
+1- all services nams is in small case 
+2- the name of the service is follwoed by _[functionsality of the servce ex db,orc,llm,log]
+3- all container names are dc_[name of the sort name of technology ] ex. dc_airflow,dc_ollama dc_postgresdc
+4- name of all folders that will be used as volumes is in small case
+

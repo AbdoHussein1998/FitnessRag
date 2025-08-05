@@ -1,0 +1,28 @@
+
+# --- API & Web Server ---
+uvicorn==0.35.0  # Note: uvicorn[standard] extras not shown in freeze file
+fastapi==0.116.1
+
+# --- Orchestration / Workflow ---
+apache-airflow==3.0.3 
+apache-airflow-core==3.0.3
+apache-airflow-providers-postgres==6.2.2
+apache-airflow-providers-mongo==5.2.2
+
+# --- Database ---
+SQLAlchemy==1.4.54
+psycopg2-binary==2.9.10
+pymongo==4.13.2
+qdrant-client==1.15.1
+
+
+# --- Data & Notebooks ---
+pandas==2.3.1
+gspread==6.1.2  
+notebook==7.4.2  
+
+# --- OpenAI & LLM ---
+openai==1.98.0
+
+
+# apache-airflow-providers-google==17.0.0
