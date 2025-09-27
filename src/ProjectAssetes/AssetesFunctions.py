@@ -1,4 +1,8 @@
+# src/ProjectAssetes/AssetesFunctions.py
+import sys
+import os
 import logging
+import dotenv 
 
 def get_logger(logger_name):
     logger = logging.getLogger(logger_name)  # Change name as needed
@@ -11,5 +15,23 @@ def get_logger(logger_name):
 # Create formatter and add it to the handler
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     console_handler.setFormatter(formatter)
+    
+    
+    logger.addHandler(console_handler)
+
     return logger
 
+
+def load_dotenv():
+    """
+    Load environment variables from a .env file.
+    """
+    logger = get_logger(__name__)
+    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+    if os.path.exists(dotenv_path):
+        dotenv.load_dotenv(dotenv_path)
+        logger.info(f"Loaded environment variables from {dotenv_path}")
+    else:
+        logger.error(f"Loaded environment variables from {dotenv_path}")
+        raise FileNotFoundError(f".env file not found at {dotenv_path}")
+    

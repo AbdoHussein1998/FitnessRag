@@ -1,1 +1,2 @@
 from .ClientRoutes import welcome_router
+from .AdminRoutes import upload_text_file_router,create_collection_in_mongo_router,delete_collection_in_mongo_router
