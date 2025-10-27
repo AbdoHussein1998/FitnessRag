@@ -1,2 +1,4 @@
 from .UploadingTextFiles import upload_text_file_router
 from .ManageMongoCollectionRoutes import create_collection_in_mongo_router,delete_collection_in_mongo_router
+from .ChunkDocument import chunk_document_router
+from .UploadingMultipleFiles import upload_multiple_text_files_router

@@ -28,12 +28,9 @@ async def connect_to_mongo(app: FastAPI):
                 await app.mongo_db.create_collection(collection_name)
                 await app.mongo_db[collection_name].create_indexes([
                         pymongo.IndexModel([("title", 1)], name="title_index", unique=True),
-                        pymongo.IndexModel([("id", 1)], name="id_index", unique=True)])
+                        pymongo.IndexModel([("file_id", 1)], name="id_index", unique=True)])
                 app.mongo_collections_names.append(collection_name)
                 logger.info(f"Collection {collection_name} created.")
-
-        
-
 
 @asynccontextmanager
 async def fastapi_lifespan(app: FastAPI):

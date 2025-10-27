@@ -32,7 +32,7 @@ class ManageCollection(ConnectionsAssets):
                 self.logger.info(f"Collection {collection_name} created.")
                 await self.request.app.mongo_db[collection_name].create_indexes([
                         pymongo.IndexModel([("title", 1)], name="title_index", unique=True),
-                        pymongo.IndexModel([("id", 1)], name="id_index", unique=True)])
+                        pymongo.IndexModel([("file_id", 1)], name="id_index", unique=True)])
                 self.logger.info(f"Indexes created for collection {collection_name}.")
                 self.request.app.mongo_collections_names.append(collection_name)
                 self.logger.info(f"Collection {collection_name} created and indexed.")

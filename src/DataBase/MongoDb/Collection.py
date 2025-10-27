@@ -11,7 +11,7 @@ from flask import request
 class MongoDbCollection(ConnectionsAssets):
     
     def __init__(self,request:Request,collection_name:str):
-        super.__init__(request=request)
+        super().__init__(request=request)
         self.logger = get_logger(__name__)
         self.collection = self.mongo_db[collection_name]
         
@@ -20,7 +20,6 @@ class MongoDbCollection(ConnectionsAssets):
     @classmethod
     async def init_class(cls,request: Request,collection_name:str):
         instance=cls(request=request, collection_name=collection_name)
-        await instance.init_class()
         return instance
 
 
@@ -37,8 +36,8 @@ class MongoDbCollection(ConnectionsAssets):
         try:
             result = await self.collection.find_one(filter=filter_dict)
             if result:
-                self.logger.info(f"Document found: {result}")
-                return (result,result.inserted_id)
+                self.logger.info(f"Document found: {result['title']}")
+                return result
             else:
                 self.logger.info("Document not found")
                 return None
@@ -55,12 +54,7 @@ class MongoDbCollection(ConnectionsAssets):
                 inserted_ids.extend(result.inserted_ids)
                 self.logger.info(f"We sucssufly inserted {len(inserted_ids)} / {len(documents)} ")
                 await asyncio.sleep(0.1)
-            return (result, inserted_ids)
-        
-
-        
-                
-
+            return inserted_ids
 
 
         except Exception as e:

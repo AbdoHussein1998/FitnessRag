@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: sha256:69b3425389b798d85cc48ef8f4d61449ed018ba1e882c3c3278494dd07caddc6
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB_NAME}
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - fitness_network
+    restart: always
+
+
+
+volumes:
+  mongodb_data:
+
+networks:
+  fitness_network:
+    driver: bridge

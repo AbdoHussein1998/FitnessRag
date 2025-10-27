@@ -5,21 +5,21 @@ import logging
 import dotenv 
 
 def get_logger(logger_name):
-    logger = logging.getLogger(logger_name)  # Change name as needed
-    logger.setLevel(logging.DEBUG)  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-
-# Create console handler
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG)
-
-# Create formatter and add it to the handler
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    console_handler.setFormatter(formatter)
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.DEBUG)
     
+    # Only add handler if logger doesn't have any handlers yet
+    if not logger.handlers:
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(formatter)
+        
+        logger.addHandler(console_handler)
     
-    logger.addHandler(console_handler)
-
     return logger
+
 
 
 def load_dotenv():

@@ -12,7 +12,7 @@ upload_text_file_router = APIRouter()
 async def upload_text_file(request:Request,
                            collection_name:str=Form(...),
                            file: UploadFile=File(...),
-                           file_name:str=Form(...)):
+                           title:str=Form(...)):
 
     #Initaliztion 
     mcol=await MongoDbCollection.init_class(request=request,collection_name=collection_name,)
@@ -39,7 +39,7 @@ async def upload_text_file(request:Request,
         )
     
     # Processing  
-    document=txt.text_into_dict(collection_name=collection_name,file_name=file_name)
+    document=txt.text_into_dict(collection_name=collection_name,title=title)
     
     
     #Upload the Text to Mongo 
@@ -49,12 +49,15 @@ async def upload_text_file(request:Request,
         
         
         return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content=f"""Text file uploaded successfully!,
-         title: {file_name},
-         ID: {str(inserted_id[1])}
-         """
+            status_code=status.HTTP_200_OK,
+            content={
+                "message": "Text file uploaded successfully!",
+                "title": title,
+                "inserted_id": str(inserted_id[0]),
+                "file_id": document["file_id"]
+            }
         )
+
     except Exception as e:
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
