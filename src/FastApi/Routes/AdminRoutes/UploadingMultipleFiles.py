@@ -6,7 +6,7 @@ from FastApi.Assistants import UploadFileValidation
 from DataBase.TEXT import TextProcessing
 from fastapi import APIRouter, status,UploadFile,File,Form,Request
 from fastapi.responses import JSONResponse
-from DataBase.MongoDb import MongoDbCollection
+from DataBase.Json.Provider.MongoDb import MongoDbCollectionController
 
 
 
@@ -19,13 +19,13 @@ async def upload_text_files(
     files: List[UploadFile] = File(...),
     titles: List[str] = Form(...)
 ):
-    # Initialization 
-    mcol = await MongoDbCollection.init_class(
-        request=request,
-        collection_name=collection_name
-    )
-    val = UploadFileValidation()
     
+    # Initialization 
+    mcol = await MongoDbCollectionController.init_class(request=request,)
+    val = UploadFileValidation()
+
+
+    await mcol.connect(collection_name=collection_name)
     # Validation - Collection name
     if val.check_collection_name(collection_name, request) == False:
         return JSONResponse(
@@ -72,17 +72,24 @@ async def upload_text_files(
     
     # Upload all documents to MongoDB using insert_many
     try:
-        inserted_ids = await mcol.insert_many(documents=documents)
-        print("DEBUG: inserted_ids =", inserted_ids)
-        print("DEBUG: type =", type(inserted_ids))
-
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={"message": "Text files uploaded successfully!",}
-        )
+        case,inseerted_ids = await mcol.insert_many(documents=documents)
+        if case==False:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content=f"Error inserting documents: check logging for more info"
+            )
+        else:
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content={
+                    "message": "Text files uploaded successfully!",
+                    "file_info": file_info,
+                    "inserted_ids": [str(id) for id in inseerted_ids]
+                }
+            )
         
     except Exception as e:
         return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=status.HTTP_400_BAD_REQUEST,
             content=f"Error inserting documents: {e}"
         )

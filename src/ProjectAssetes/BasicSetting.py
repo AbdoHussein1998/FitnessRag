@@ -17,6 +17,11 @@ class BasicSettings(BaseSettings):
     MongoDB_COLLECTION_NAME_jeff_nippard:str
     MongoDB_COLLECTION_NAME_tomas_delure:str
 
+
+    QDRANT_DB_API_KEY:str
+    QDRANT_DB_URL:str
+    
+
 def get_basic_settings() -> BasicSettings:
     """
     Get the basic settings for the application.

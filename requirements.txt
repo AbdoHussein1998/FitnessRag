@@ -1,32 +1,31 @@
-# pydantic-settings==2.10.1
 
-# # --- API & Web Server ---
+# --- API & Web Server ---
+python-dotenv==1.1.1
+pydantic_settings==2.10.1
+uvicorn==0.35.0  
+fastapi==0.116.1
 
 
 
-# # --- Database ---
+# --- Database ---
+qdrant-client==1.15.1
+pymongo==4.13.2
+motor==3.7.1
+psycopg2-binary==2.9.10
 
 
-# # --- Data & Notebooks ---
+# --- Data & Notebooks ---
 # gspread==6.1.2  
 
 
-# # --- OpenAI & LLM ---
+# --- OpenAI & LLM ---
 # openai==1.98.0
 
 
-# # apache-airflow-providers-google==17.0.0
 apache-airflow==3.0.6 
 SQLAlchemy==1.4.54
 Flask-AppBuilder==5.0.0
-uvicorn==0.35.0  
-fastapi==0.116.1
-psycopg2-binary==2.9.10
-pymongo==4.13.2
-motor==3.7.1
-qdrant-client==1.15.1
+
 jupyter
 ipykernel
 notebook==7.4.5
-python-dotenv==1.1.1
-pydantic_settings==2.10.1

@@ -3,7 +3,7 @@ from FastApi.Assistants import UploadFileValidation
 from DataBase.TEXT import TextProcessing
 from fastapi import APIRouter, status,UploadFile,File,Form,Request
 from fastapi.responses import JSONResponse
-from DataBase.MongoDb import MongoDbCollection
+from DataBase.Json.Provider.MongoDb import MongoDbCollectionController
 
 
 
@@ -15,11 +15,13 @@ async def upload_text_file(request:Request,
                            title:str=Form(...)):
 
     #Initaliztion 
-    mcol=await MongoDbCollection.init_class(request=request,collection_name=collection_name,)
+    mcol=await MongoDbCollectionController.init_class(request=request)
     txt=TextProcessing(file=file)
     val=UploadFileValidation()
     
 
+    # Connection
+    await mcol.connect(collection_name=collection_name)
 
     # Validation
     if val.check_collection_name(collection_name,request) ==False:
@@ -44,10 +46,7 @@ async def upload_text_file(request:Request,
     
     #Upload the Text to Mongo 
     try:
-        inserted_id= await mcol.insert_one(document=document)
-        
-        
-        
+        inserted_id= await mcol.insert_one(document=document,collection_name=collection_name)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
@@ -60,8 +59,8 @@ async def upload_text_file(request:Request,
 
     except Exception as e:
         return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content=f"Error inserting documents: {e}"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=f"Error inserting documents: check logging for more info"
         )
 
 
