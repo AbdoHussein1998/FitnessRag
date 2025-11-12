@@ -13,9 +13,12 @@ class BasicSettings(BaseSettings):
     APP_VERSION:str
     MongoDB_URL:str
     MongoDB_DB_NAME:str
-    MongoDB_COLLECTION_NAME_dr_mike:str
-    MongoDB_COLLECTION_NAME_jeff_nippard:str
-    MongoDB_COLLECTION_NAME_tomas_delure:str
+    MongoDB_COLLECTION_NAME_DR_MIKE:str
+    MongoDB_COLLECTION_NAME_JEFF_NIPPARD:str
+    MongoDB_COLLECTION_NAME_TOMAS_DELURE:str
+
+    MongoDB_COLLECTION_NAME_CHUNKS:str
+    MongoDB_COLLECTION_NAME_INSERTED_IDS:str
 
 
     QDRANT_DB_API_KEY:str

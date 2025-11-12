@@ -3,7 +3,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class ChunkDocumentRequest(BaseModel):
+class ChunkDocumentRequestPayload(BaseModel):
     collection_name: str
     document_id: Optional[str] = None
     title: Optional[str] = None

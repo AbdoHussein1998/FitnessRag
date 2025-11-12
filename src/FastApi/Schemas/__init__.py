@@ -1,1 +1,1 @@
-from .ChunkDocumentSchemas import ChunkDocumentRequest
+from .ChunkDocumentSchemas import ChunkDocumentRequestPayload

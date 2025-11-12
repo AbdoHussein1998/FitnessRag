@@ -3,7 +3,8 @@ import sys
 import os
 import logging
 import dotenv 
-
+from fastapi import Request
+from motor.motor_asyncio import AsyncIOMotorCollection
 def get_logger(logger_name):
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG)
@@ -20,8 +21,6 @@ def get_logger(logger_name):
     
     return logger
 
-
-
 def load_dotenv():
     """
     Load environment variables from a .env file.
@@ -35,3 +34,7 @@ def load_dotenv():
         logger.error(f"Loaded environment variables from {dotenv_path}")
         raise FileNotFoundError(f".env file not found at {dotenv_path}")
     
+
+
+
+

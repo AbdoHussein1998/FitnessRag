@@ -46,7 +46,8 @@ async def upload_text_file(request:Request,
     
     #Upload the Text to Mongo 
     try:
-        inserted_id= await mcol.insert_one(document=document,collection_name=collection_name)
+        print("we are on roues")
+        inserted_id= await mcol.insert_one(document=document)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={

@@ -24,8 +24,15 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
 
 
     async def connect(self,collection_name:str):
-        self.collection=self.request.app.mongo_db[collection_name]
-
+        result=await self.is_collection_existed(collection_name=collection_name)
+        if result==True:
+            self.logger.info(f"Connected to Collection {collection_name}")
+            self.collection=self.request.app.mongo_db[collection_name]
+            return True
+        else: 
+            self.logger.error(f"No Collection With this Name {collection_name}")
+            return False
+    
     async def list_collections(self)->list:
 
         collection_names=await self.request.app.mongo_db.list_collection_names()
@@ -43,17 +50,18 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
         instance=cls(request=request)
         return instance
     
-    async def insert_one(self,collection_name:str,document:dict):
-        await self.is_collection_existed(collection_name=collection_name)
+    async def insert_one(self,document:dict):
+
+        print("we are insert_one")
         try:
-            result=await self.request.app.mongo_db[collection_name].insert_one(document)
-            return result.inserted_id
+            result= await self.collection.insert_one(document)
+            return True,result.inserted_id
         except pymongo.errors.DuplicateKeyError:
             self.logger.error(f"Document with file_id {document['file_id']} already exists.")
-            return False
+            return False,pymongo.errors.DuplicateKeyError
         except Exception as e:
             self.logger.error(f"Error inserting document: {e}")
-            return False
+            return False,e
         
     async def insert_many(self,documents:list[dict],batch_size:int=1000)->list:
             try:
@@ -69,24 +77,20 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
                 self.logger.error(f"Error inserting document: {type(e).__name__}: {str(e)[:200]}")  # Limit to 200 chars
                 return False,inserted_ids
 
-    async def find_one(self,filter_dict:dict,collection_name:str)->tuple:    
-        collection_names =await self.list_collections()
-        if collection_name not in collection_names:
-            self.logger.error(f"Collection {collection_name} not found.")
-            return False
-        else:
+    async def find_one(self,filter_dict:dict)->tuple:    
+
             try:
-                document=await self.request.app.mongo_db[collection_name].find_one(filter_dict)
+                document=await self.collection.find_one(filter_dict)
                 if document:
-                    return document
+                    return True,document
                 else:
                     self.logger.error(f"Document not found.")
-                    return False
+                    return False,None
             except Exception as e:
                 self.logger.error(f"Error finding document: {e}")
-                return False
-        
-    async def stream_many_as_batches(self,filter_dict:dict=None,batch_size:int=1000,)->list[dict]:
+                return False,None
+
+    async def stream_many_as_batches(self,filter_dict:dict=None,projection=None,batch_size:int=1000,)->list[dict]:
 
             if not filter_dict:
                 filter_dict = {}
@@ -95,7 +99,7 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
             counter=0
 
 
-            cursor=self.collection.find(filter_dict)
+            cursor=self.collection.find(filter_dict,projection)
 
             async for document in cursor:
                     batch.append(document)
@@ -112,7 +116,7 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
                 yield batch
                 print(f"final bacth we have  {counter} documents")
 
-
+   
     async def create_collection(self, collection_name: str) -> bool:
         
         try:
@@ -140,9 +144,6 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
             self.logger.error(f"Error creating collection '{collection_name}': {e}")
             return False
         
-    
-
-
 
     async def delete_collection(self, collection_name: str) -> bool:
         try:
@@ -161,7 +162,9 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
             return False
 
 
-    def find_many():
+    
+
+    async def find_many():
         pass
     
 

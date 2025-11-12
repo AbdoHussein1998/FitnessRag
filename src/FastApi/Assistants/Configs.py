@@ -19,9 +19,9 @@ async def connect_to_mongo(app: FastAPI):
 
     logger.info(f"Connected to MongoDB and database name is {basic_settings.MongoDB_DB_NAME}")
     if app.mongo_collections_names is not None:
-        for collection_name in [basic_settings.MongoDB_COLLECTION_NAME_dr_mike,
-                                basic_settings.MongoDB_COLLECTION_NAME_jeff_nippard,
-                                basic_settings.MongoDB_COLLECTION_NAME_tomas_delure,]:
+        for collection_name in [basic_settings.MongoDB_COLLECTION_NAME_DR_MIKE,
+                                basic_settings.MongoDB_COLLECTION_NAME_JEFF_NIPPARD,
+                                basic_settings.MongoDB_COLLECTION_NAME_TOMAS_DELURE,]:
 
             if collection_name not in app.mongo_collections_names:
                 logger.info(f"Collection {collection_name} does not exist. Creating it...")
@@ -31,6 +31,11 @@ async def connect_to_mongo(app: FastAPI):
                         pymongo.IndexModel([("file_id", 1)], name="id_index", unique=True)])
                 app.mongo_collections_names.append(collection_name)
                 logger.info(f"Collection {collection_name} created.")
+            if collection_name not in app.mongo_collections_names:       
+                for collection_name in [basic_settings.MongoDB_COLLECTION_NAME_CHUNKS,
+                                        basic_settings.MongoDB_COLLECTION_NAME_INSERTED_IDS,]:
+                    await app.mongo_db.create_collection(collection_name)
+                
 
 @asynccontextmanager
 async def fastapi_lifespan(app: FastAPI):
