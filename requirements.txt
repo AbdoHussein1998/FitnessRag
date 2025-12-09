@@ -1,28 +1,33 @@
 
 # --- API & Web Server ---
-uvicorn==0.35.0  # Note: uvicorn[standard] extras not shown in freeze file
+python-dotenv==1.1.1
+pydantic_settings==2.10.1
+uvicorn==0.35.0  
 fastapi==0.116.1
 
-# --- Orchestration / Workflow ---
-apache-airflow==3.0.3 
-apache-airflow-core==3.0.3
-apache-airflow-providers-postgres==6.2.2
-apache-airflow-providers-mongo==5.2.2
+
 
 # --- Database ---
-SQLAlchemy==1.4.54
-psycopg2-binary==2.9.10
-pymongo==4.13.2
 qdrant-client==1.15.1
+pymongo==4.13.2
+motor==3.7.1
+psycopg2-binary==2.9.10
 
 
 # --- Data & Notebooks ---
-pandas==2.3.1
-gspread==6.1.2  
-notebook==7.4.2  
+# gspread==6.1.2  
+
 
 # --- OpenAI & LLM ---
-openai==1.98.0
+# openai==1.98.0
+transformers==4.57.1
+einops==0.8.1
 
 
-# apache-airflow-providers-google==17.0.0
+apache-airflow==3.0.6 
+SQLAlchemy==1.4.54
+Flask-AppBuilder==5.0.0
+
+jupyter
+ipykernel
+notebook==7.4.5

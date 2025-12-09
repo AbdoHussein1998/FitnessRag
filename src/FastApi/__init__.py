@@ -1,1 +1,2 @@
-from .Routes import welcome_router
+from .Routes import *
+from .Assistants import fastapi_lifespan
