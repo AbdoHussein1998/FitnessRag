@@ -31,11 +31,14 @@ async def connect_to_mongo(app: FastAPI):
                         pymongo.IndexModel([("file_id", 1)], name="id_index", unique=True)])
                 app.mongo_collections_names.append(collection_name)
                 logger.info(f"Collection {collection_name} created.")
-            if collection_name not in app.mongo_collections_names:       
-                for collection_name in [basic_settings.MongoDB_COLLECTION_NAME_CHUNKS,
-                                        basic_settings.MongoDB_COLLECTION_NAME_INSERTED_IDS,]:
-                    await app.mongo_db.create_collection(collection_name)
-                
+                for collection_name in [
+                                        basic_settings.MongoDB_COLLECTION_NAME_CHUNKS,
+                                        basic_settings.MongoDB_COLLECTION_NAME_CHUNKED_IDS,
+                                        basic_settings.MongoDB_COLLECTION_NAME_EMBEDDED_CHUNKS,]:
+                    if collection_name not in app.mongo_collections_names:      
+                        logger.info(f"Collection {collection_name} does not exist. Creating it...") 
+                        await app.mongo_db.create_collection(collection_name)
+                        logger.info(f"Collection {collection_name} created.")
 
 @asynccontextmanager
 async def fastapi_lifespan(app: FastAPI):
@@ -47,3 +50,5 @@ async def fastapi_lifespan(app: FastAPI):
 
 
     yield
+
+    print("Shutting down...")

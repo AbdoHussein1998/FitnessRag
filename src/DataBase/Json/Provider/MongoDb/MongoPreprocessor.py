@@ -6,14 +6,14 @@ from ProjectAssetes import get_logger
 
 
 
-class ChunksManager:
+class MongoChunksManager:
     
-    def __init__(self,chunk_size=1500,overlap=200):
+    def __init__(self,chunk_size=1500,overlap=500):
         self.chunk_size = chunk_size
         self.overlap = overlap
         self.logger = get_logger("ChunksManager")
     @classmethod
-    async def init_class(cls,chunk_size=1000, overlap=200):
+    async def init_class(cls,chunk_size=1500, overlap=500):
         instance=cls(chunk_size=chunk_size, overlap=overlap)
         return instance
     

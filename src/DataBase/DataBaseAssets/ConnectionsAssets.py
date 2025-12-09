@@ -6,6 +6,8 @@ class ConnectionsAssets:
         self.request=request
         self.mongo_db=self.request.app.mongo_db
         self.basic_settings=get_basic_settings()
+
+        
         
         
         

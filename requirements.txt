@@ -20,6 +20,8 @@ psycopg2-binary==2.9.10
 
 # --- OpenAI & LLM ---
 # openai==1.98.0
+transformers==4.57.1
+einops==0.8.1
 
 
 apache-airflow==3.0.6 

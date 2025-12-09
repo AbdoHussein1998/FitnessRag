@@ -11,16 +11,16 @@ import pymongo
 from DataBase.Json.JsonInterface import CollectionControllerInterface
 import pymongo
 from motor.motor_asyncio import AsyncIOMotorCollection
+from ProjectAssetes import get_basic_settings
 
 
 
-
-class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterface):
+class MongoDbCollectionController(CollectionControllerInterface):
     def __init__(self,request:Request,):
-        super().__init__(request=request)
         self.logger = get_logger(__name__)
         self.all_collections=[]
         self.request=request
+        self.basic_settings=get_basic_settings()
 
 
     async def connect(self,collection_name:str):
@@ -52,7 +52,6 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
     
     async def insert_one(self,document:dict):
 
-        print("we are insert_one")
         try:
             result= await self.collection.insert_one(document)
             return True,result.inserted_id
@@ -97,8 +96,6 @@ class MongoDbCollectionController(ConnectionsAssets,CollectionControllerInterfac
 
             batch=[] 
             counter=0
-
-
             cursor=self.collection.find(filter_dict,projection)
 
             async for document in cursor:

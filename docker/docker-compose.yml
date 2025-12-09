@@ -37,6 +37,19 @@ services:
       start_period: 40s
     networks:
       - fitness_network
+  ollama:
+    image: sha256:1287ad7ee8431ce1c46f613a0b16dc9dc0f2c037ff232208e7152dc86c6d45fe
+    container_name: EMBEDDING_MODEl
+    networks:
+      - fitness_network
+    volumes:
+    - ./ollama_data:/root/.ollama
+    - ./ollama-entrypoint.sh:/entrypoint.sh
+    restart: unless-stopped
+    ports: 
+      - "11434:11434"
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+      
 
 volumes:
   mongodb_data:

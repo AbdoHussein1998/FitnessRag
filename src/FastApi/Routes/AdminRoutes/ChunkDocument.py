@@ -4,7 +4,7 @@ from fastapi import APIRouter, status,Form,Depends,Request
 from fastapi.responses import JSONResponse
 from DataBase.Json.Provider.MongoDb import MongoDbCollectionController
 from DataBase.DataBaseAssets import ConnectionsAssets
-from DataBase.Json.Provider.MongoDb import ChunksManager
+from DataBase.Json.Provider.MongoDb import MongoChunksManager
 from FastApi.Schemas import ChunkDocumentRequestPayload
 from FastApi.Assistants import get_mongo_db_collections_names
 from bson import ObjectId
@@ -13,7 +13,7 @@ from pprint import pprint
 
         
 async def process_and_chunk_documents(docs: list,
-chunk_man_obj:MongoDbCollectionController
+chunk_man_obj:MongoChunksManager
 ,col_chunks_obj:MongoDbCollectionController
 ,col_chunked_ids_obj:MongoDbCollectionController
 ,payload:ChunkDocumentRequestPayload
@@ -23,7 +23,7 @@ chunk_man_obj:MongoDbCollectionController
     
     Args:
         docs: List of document texts to be chunked
-        chunk_man_obj: ChunksManager instance for text chunking operations
+        chunk_man_obj: MongoChunksManager instance for text chunking operations
         col_chunks_obj: MongoDB collection controller for storing document chunks
         col_chunked_ids_obj: MongoDB collection controller for storing chunk ID metadata
         payload: Request payload containing collection_name and other metadata
@@ -40,7 +40,6 @@ chunk_man_obj:MongoDbCollectionController
         total_inserted_ids = 0
         docs_not_inserted=[]
         for i in  range(0,len(docs)):
-            print(docs[i]["title"])
             logger.info(f"Looking for Chunked document with Title {docs[i]['title']}")
             case,document=await col_chunks_obj.find_one(filter_dict={"title":docs[i]['title']})
             if case ==False:
@@ -56,14 +55,14 @@ chunk_man_obj:MongoDbCollectionController
             inserted_ids_list = [str(id) for id in inserted_ids]
             # Build metadata document to track which chunks belong to which source file
             # Start with the list of chunk IDs that were just inserted
-            inserted_ids_doc = {"inserted_ids": inserted_ids_list}
-            inserted_ids_doc.update({"collection_name": payload.collection_name})
-            inserted_ids_doc.update({"file_id": doc_chunks[0]["file_id"]})
-            inserted_ids_doc.update({"mongo_id": doc_chunks[0]["mongo_id"]})
-            inserted_ids_doc.update({"title": doc_chunks[0]["title"]})
+            chunked_ids_doc = {"inserted_ids": inserted_ids_list}
+            chunked_ids_doc.update({"collection_name": payload.collection_name})
+            chunked_ids_doc.update({"file_id": doc_chunks[0]["file_id"]})
+            chunked_ids_doc.update({"mongo_id": doc_chunks[0]["mongo_id"]})
+            chunked_ids_doc.update({"title": doc_chunks[0]["title"]})
 
-            
-            chunked_case,chunked_inserted_ids = await col_chunked_ids_obj.insert_one(document=inserted_ids_doc)
+
+            chunked_case,chunked_inserted_ids = await col_chunked_ids_obj.insert_one(document=chunked_ids_doc)
 
             logger.info(f"we have inserted the inserted of ids {len(docs)} document, which is total ={len(inserted_ids)} ")
         
@@ -98,7 +97,6 @@ async def chunk_document(payload:ChunkDocumentRequestPayload,request:Request,
     mongo_collections_names= request.app.mongo_collections_names
     #Valdiation
     payload_obj=payload
-    print(payload_obj)
     if payload.collection_name is None:
         return JSONResponse(status_code=400, content={"message": "Collection name is required"})
     elif payload.collection_name not in mongo_collections_names:
@@ -107,11 +105,11 @@ async def chunk_document(payload:ChunkDocumentRequestPayload,request:Request,
     # initaliztion
     col_chunks_obj=await MongoDbCollectionController.init_class(request=request)
     col_chunked_ids_obj=await MongoDbCollectionController.init_class(request=request)
-    chunk_man_obj= await ChunksManager.init_class()
+    chunk_man_obj= await MongoChunksManager.init_class()
     col_controller=await MongoDbCollectionController.init_class(request=request)
     # Connecting
     await col_chunks_obj.connect(collection_name="Chunks")
-    await col_chunked_ids_obj.connect(collection_name="Inserted_ids")
+    await col_chunked_ids_obj.connect(collection_name="Chunked_IDs")
     await col_controller.connect(collection_name=payload.collection_name)
     
     docs=[]

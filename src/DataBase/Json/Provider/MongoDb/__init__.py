@@ -1,6 +1,6 @@
 
 
 from .CollectionController import MongoDbCollectionController
-from .Chunks import ChunksManager
+from .MongoPreprocessor import MongoChunksManager
 
 
